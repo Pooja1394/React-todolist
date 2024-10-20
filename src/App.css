@@ -1,0 +1,12 @@
+.todolistitem {
+    list-style: none;
+    display: flex;
+}
+
+.mr-10 {
+    margin-right: 10px;
+}
+
+table, th, td {
+    border:1px solid black;
+  }
