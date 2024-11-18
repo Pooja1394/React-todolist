@@ -1,33 +1,43 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
-  entry: './src/index.js',
-  mode: 'development',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
-      },
-      {
-        test: /\.css$/,  // Add this rule for CSS
-        use: ['style-loader', 'css-loader'] // Process CSS with these loaders
-      }
-    ]
-  },
-  devServer: {
-    static: {
-        directory: path.resolve(__dirname, 'public')  // Use `static` instead of `contentBase`
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
+
+  return {
+    entry: './src/index.js',
+    mode: isProduction ? 'production' : 'development',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.js',
+      publicPath: './', // Ensure the correct path for GitHub Pages
     },
-    // contentBase: path.resolve(__dirname, 'public'),
-    compress: true,
-    port: 9000
-  }
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+          },
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
+      ],
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: './public/index.html',  // Use the existing index.html from your public folder
+      }),
+    ],
+    devServer: {
+      static: {
+        directory: path.resolve(__dirname, 'public'),
+      },
+      compress: true,
+      port: 9000,
+    },
+  };
 };
